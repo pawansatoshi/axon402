@@ -7,7 +7,7 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState("overview")
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-[#050816] text-white">
       <div className="mx-auto max-w-7xl px-4 py-6">
 
         <div className="mb-8 flex items-center justify-between">
@@ -17,7 +17,7 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-2 text-sm text-zinc-400">
-              Autonomous coordination infrastructure
+              Deterministic infrastructure for autonomous coordination
             </p>
           </div>
 
@@ -31,167 +31,185 @@ export default function HomePage() {
           setActive={setActiveTab}
         />
 
-        <section className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-8">
-          <h2 className="text-4xl font-semibold tracking-tight">
-            Infrastructure Overview
-          </h2>
+        {activeTab === "overview" && (
+          <section className="mt-10 space-y-6">
 
-          <p className="mt-4 max-w-3xl text-zinc-400">
-            Deterministic infrastructure for autonomous coordination.
-          </p>
+            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">
+              <h2 className="text-4xl font-semibold">
+                Infrastructure Overview
+              </h2>
 
-          <div className="mt-8 grid gap-4 md:grid-cols-4">
+              <p className="mt-4 text-zinc-400">
+                Programmable coordination infrastructure for autonomous execution systems.
+              </p>
 
-            <div className="rounded-2xl border border-white/10 p-5">
-              <div className="text-sm text-zinc-500">
-                Execution Throughput
-              </div>
+              <div className="mt-8 grid gap-4 md:grid-cols-4">
 
-              <div className="mt-3 text-3xl font-semibold">
-                1,284
-              </div>
-            </div>
+                <div className="rounded-2xl border border-white/10 p-5">
+                  <div className="text-sm text-zinc-500">
+                    Execution Throughput
+                  </div>
 
-            <div className="rounded-2xl border border-white/10 p-5">
-              <div className="text-sm text-zinc-500">
-                Settlement Volume
-              </div>
-
-              <div className="mt-3 text-3xl font-semibold">
-                42,800 USDC
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 p-5">
-              <div className="text-sm text-zinc-500">
-                Latency
-              </div>
-
-              <div className="mt-3 text-3xl font-semibold">
-                84ms
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 p-5">
-              <div className="text-sm text-zinc-500">
-                Infrastructure Health
-              </div>
-
-              <div className="mt-3 text-3xl font-semibold text-emerald-400">
-                99.98%
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <section className="mt-10 grid gap-6 md:grid-cols-2">
-
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">
-            <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-semibold">
-                Autonomous Infrastructure Execution
-              </h3>
-
-              <div className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-xs text-cyan-300">
-                Operational
-              </div>
-            </div>
-
-            <p className="mt-5 text-zinc-400">
-              AXON402 provides programmable execution infrastructure,
-              deterministic settlement coordination, observability systems,
-              and institutional-grade orchestration architecture built on Arc.
-            </p>
-
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
-
-              <div className="rounded-2xl border border-white/10 p-5">
-                <div className="text-sm text-zinc-400">
-                  Settlement
+                  <div className="mt-3 text-3xl font-semibold">
+                    1,284
+                  </div>
                 </div>
 
-                <div className="mt-2 text-lg font-medium">
-                  Arc-native execution
+                <div className="rounded-2xl border border-white/10 p-5">
+                  <div className="text-sm text-zinc-500">
+                    Settlement Volume
+                  </div>
+
+                  <div className="mt-3 text-3xl font-semibold">
+                    42,800 USDC
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 p-5">
+                  <div className="text-sm text-zinc-500">
+                    Latency
+                  </div>
+
+                  <div className="mt-3 text-3xl font-semibold">
+                    84ms
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 p-5">
+                  <div className="text-sm text-zinc-500">
+                    Infrastructure Health
+                  </div>
+
+                  <div className="mt-3 text-3xl font-semibold text-emerald-400">
+                    99.98%
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </section>
+        )}
+
+        {activeTab === "observability" && (
+          <section className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-8">
+            <h2 className="text-3xl font-semibold">
+              Observability Layer
+            </h2>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+
+              <div className="rounded-2xl border border-white/10 p-5">
+                <div className="text-sm text-zinc-500">
+                  RPC Status
+                </div>
+
+                <div className="mt-2 text-lg text-emerald-400">
+                  Operational
                 </div>
               </div>
 
               <div className="rounded-2xl border border-white/10 p-5">
-                <div className="text-sm text-zinc-400">
-                  Security
+                <div className="text-sm text-zinc-500">
+                  Coordination Latency
                 </div>
 
-                <div className="mt-2 text-lg font-medium">
-                  Policy-controlled infrastructure
+                <div className="mt-2 text-lg">
+                  84ms
                 </div>
               </div>
 
               <div className="rounded-2xl border border-white/10 p-5">
-                <div className="text-sm text-zinc-400">
-                  Identity
+                <div className="text-sm text-zinc-500">
+                  Settlement Integrity
                 </div>
 
-                <div className="mt-2 text-lg font-medium">
-                  Unified coordination profiles
+                <div className="mt-2 text-lg">
+                  Verified
                 </div>
               </div>
 
             </div>
-          </div>
+          </section>
+        )}
 
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">
-            <h3 className="text-2xl font-semibold">
-              Infrastructure Activity
-            </h3>
+        {activeTab === "ledger" && (
+          <section className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-8">
+            <h2 className="text-3xl font-semibold">
+              Infrastructure Ledger
+            </h2>
 
             <div className="mt-6 space-y-4">
 
-              <div className="flex items-center justify-between rounded-2xl border border-white/10 p-4">
-                <div>
-                  <div className="text-sm text-zinc-500">
-                    Settlement finalized
-                  </div>
-
-                  <div className="mt-1 text-sm">
-                    Execution verified
-                  </div>
+              <div className="rounded-2xl border border-white/10 p-5">
+                <div className="text-sm text-zinc-500">
+                  Latest Settlement
                 </div>
 
-                <div className="h-3 w-3 rounded-full bg-emerald-400" />
-              </div>
-
-              <div className="flex items-center justify-between rounded-2xl border border-white/10 p-4">
-                <div>
-                  <div className="text-sm text-zinc-500">
-                    Wallet synchronization
-                  </div>
-
-                  <div className="mt-1 text-sm">
-                    Coordination profile active
-                  </div>
+                <div className="mt-2 font-mono text-sm text-cyan-300">
+                  0x32c59bb4c662519140040cd69ab2e4e2b055b48afa97bf...
                 </div>
-
-                <div className="h-3 w-3 rounded-full bg-cyan-400" />
-              </div>
-
-              <div className="flex items-center justify-between rounded-2xl border border-white/10 p-4">
-                <div>
-                  <div className="text-sm text-zinc-500">
-                    Observability
-                  </div>
-
-                  <div className="mt-1 text-sm">
-                    Latency monitoring active
-                  </div>
-                </div>
-
-                <div className="h-3 w-3 rounded-full bg-yellow-400" />
               </div>
 
             </div>
-          </div>
+          </section>
+        )}
 
-        </section>
+        {activeTab === "wallets" && (
+          <section className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-8">
+            <h2 className="text-3xl font-semibold">
+              Wallet Infrastructure
+            </h2>
+
+            <div className="mt-6 text-zinc-400">
+              Unified wallet coordination layer operational.
+            </div>
+          </section>
+        )}
+
+        {activeTab === "security" && (
+          <section className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-8">
+            <h2 className="text-3xl font-semibold">
+              Security Layer
+            </h2>
+
+            <div className="mt-6 text-zinc-400">
+              Policy-controlled infrastructure security active.
+            </div>
+          </section>
+        )}
+
+        {activeTab === "notifications" && (
+          <section className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-8">
+            <h2 className="text-3xl font-semibold">
+              Infrastructure Notifications
+            </h2>
+
+            <div className="mt-6 space-y-4">
+
+              <div className="rounded-2xl border border-white/10 p-4">
+                Settlement finalized
+              </div>
+
+              <div className="rounded-2xl border border-white/10 p-4">
+                Wallet synchronization complete
+              </div>
+
+            </div>
+          </section>
+        )}
+
+        {activeTab === "settings" && (
+          <section className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-8">
+            <h2 className="text-3xl font-semibold">
+              Infrastructure Settings
+            </h2>
+
+            <div className="mt-6 text-zinc-400">
+              Execution policy and coordination controls.
+            </div>
+          </section>
+        )}
 
       </div>
     </main>
