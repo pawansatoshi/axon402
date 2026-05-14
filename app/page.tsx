@@ -1,232 +1,99 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
+import { StatusCard } from "@/components/infrastructure/status-card"
 
-import {
-  useAccount,
-  useBalance,
-  useDisconnect,
-  useSendTransaction
-} from 'wagmi'
-
-import { parseEther } from 'viem'
-
-import { ConnectButton } from '@rainbow-me/rainbowkit'
-
-export default function Home() {
-
-  const [mounted, setMounted] = useState(false)
-  const [user, setUser] = useState<any>(null)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const { address, chainId, isConnected } = useAccount()
-
-  const { disconnect } = useDisconnect()
-
-  const { data } = useBalance({
-    address
-  })
-
-  const {
-    sendTransaction,
-    data: txHash
-  } = useSendTransaction()
-
-  async function login() {
-
-    try {
-
-      const provider = new GoogleAuthProvider()
-
-      const result = await signInWithPopup(
-        auth,
-        provider
-      )
-
-      setUser(result.user)
-
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  function sendTestTx() {
-
-    if (!address) return
-
-    sendTransaction({
-      to: address,
-      value: parseEther('0.00001')
-    })
-  }
-
-  if (!mounted) return null
-
+export default function HomePage() {
   return (
-    <main className="min-h-screen bg-black text-white p-6">
+    <main className="min-h-screen bg-[#06070A] text-white">
+      <div className="border-b border-white/10 bg-white/[0.02] backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              AXON402
+            </h1>
 
-      <div className="max-w-2xl mx-auto">
+            <p className="text-sm text-zinc-400">
+              Deterministic infrastructure for autonomous coordination.
+            </p>
+          </div>
 
-        <h1 className="text-5xl font-black mb-3">
-          AXON402
-        </h1>
-
-        <p className="text-zinc-400 mb-10">
-          Arc Native USDC Infrastructure
-        </p>
-
-        <div className="flex gap-4 mb-10">
-
-          <button
-            onClick={login}
-            className="bg-cyan-400 text-black px-5 py-3 rounded-xl font-semibold"
-          >
-            Continue with Google
-          </button>
-
-          <ConnectButton />
+          <div className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-xs text-cyan-300">
+            ARC TESTNET ACTIVE
+          </div>
         </div>
-
-        <div className="grid gap-6">
-
-          <div className="border border-zinc-800 rounded-2xl p-6">
-            <h2 className="text-2xl font-bold mb-2">
-              PIN Protected
-            </h2>
-
-            <p className="text-zinc-400">
-              Secure transaction authorization layer powered by Turnkey.
-            </p>
-          </div>
-
-          <div className="border border-zinc-800 rounded-2xl p-6">
-            <h2 className="text-2xl font-bold mb-2">
-              Native USDC
-            </h2>
-
-            <p className="text-zinc-400">
-              Arc-native treasury and wallet infrastructure.
-            </p>
-          </div>
-
-          <div className="border border-zinc-800 rounded-2xl p-6">
-            <h2 className="text-2xl font-bold mb-2">
-              Arc Active
-            </h2>
-
-            <p className="text-zinc-400">
-              Connected to Arc Testnet settlement layer.
-            </p>
-          </div>
-
-          {isConnected && (
-            <div className="border border-cyan-500/30 rounded-2xl p-6">
-
-              <h2 className="text-3xl font-black mb-6">
-                Connected Wallet
-              </h2>
-
-              <div className="space-y-4">
-
-                <div>
-                  <p className="text-zinc-500 text-sm">
-                    Address
-                  </p>
-
-                  <p className="break-all">
-                    {address}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-zinc-500 text-sm">
-                    Chain ID
-                  </p>
-
-                  <p>
-                    {chainId}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-zinc-500 text-sm">
-                    Balance
-                  </p>
-
-                  <p>
-                    {data?.formatted} {String(data?.symbol || "")}
-                  </p>
-                </div>
-
-                <div className="flex gap-4 pt-4">
-
-                  <button
-                    onClick={sendTestTx}
-                    className="bg-cyan-400 text-black px-5 py-3 rounded-xl font-semibold"
-                  >
-                    Send Test TX
-                  </button>
-
-                  <button
-                    onClick={() => disconnect()}
-                    className="bg-red-500 px-5 py-3 rounded-xl font-semibold"
-                  >
-                    Disconnect
-                  </button>
-
-                </div>
-
-                {txHash && (
-                  <div className="pt-6">
-
-                    <p className="text-zinc-500 text-sm mb-2">
-                      Transaction Hash
-                    </p>
-
-                    <p className="break-all text-green-400">
-                      {txHash}
-                    </p>
-
-                  </div>
-                )}
-
-              </div>
-            </div>
-          )}
-
-          {user && (
-            <div className="border border-cyan-500/30 rounded-2xl p-6">
-
-              <h2 className="text-2xl font-bold mb-4">
-                Logged In User
-              </h2>
-
-              <img
-                src={user.photoURL}
-                alt="profile"
-                className="w-20 h-20 rounded-full mb-4"
-              />
-
-              <p className="text-xl font-semibold">
-                {user.displayName}
-              </p>
-
-              <p className="text-zinc-400">
-                {user.email}
-              </p>
-
-            </div>
-          )}
-
-        </div>
-
       </div>
 
+      <section className="mx-auto max-w-7xl px-6 py-10">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <StatusCard
+            title="Infrastructure Status"
+            value="Operational"
+            status="Execution systems online"
+          />
+
+          <StatusCard
+            title="Settlement Layer"
+            value="Arc"
+            status="USDC-native execution"
+          />
+
+          <StatusCard
+            title="Wallet Orchestration"
+            value="Connected"
+            status="Session verified"
+          />
+
+          <StatusCard
+            title="Observability"
+            value="Realtime"
+            status="Latency monitoring active"
+          />
+        </div>
+
+        <div className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-8">
+          <h2 className="text-2xl font-semibold">
+            Infrastructure Coordination Layer
+          </h2>
+
+          <p className="mt-4 max-w-3xl text-zinc-400">
+            AXON402 provides programmable execution infrastructure for
+            autonomous coordination, settlement orchestration, and
+            infrastructure-grade observability on Arc Network.
+          </p>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-white/10 p-5">
+              <div className="text-sm text-zinc-400">
+                Settlement
+              </div>
+
+              <div className="mt-2 text-lg font-medium">
+                Deterministic execution
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 p-5">
+              <div className="text-sm text-zinc-400">
+                Security
+              </div>
+
+              <div className="mt-2 text-lg font-medium">
+                Policy-controlled orchestration
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 p-5">
+              <div className="text-sm text-zinc-400">
+                Identity
+              </div>
+
+              <div className="mt-2 text-lg font-medium">
+                Unified infrastructure profiles
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   )
 }
