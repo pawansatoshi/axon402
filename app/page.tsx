@@ -2,42 +2,52 @@
 
 import { useState } from "react"
 
-const tabs = [
+import { MetricCard } from "@/components/dashboard/metric-card"
+import { StatusBanner } from "@/components/infrastructure/status-banner"
+import { LedgerEntry } from "@/components/ledger/ledger-entry"
+import { WalletPanel } from "@/components/wallets/wallet-panel"
+import { ActivityFeed } from "@/components/observability/activity-feed"
+
+const tabs=[
   "overview",
-  "observability",
   "ledger",
   "wallets",
+  "observability",
   "security",
   "notifications",
   "settings"
 ]
 
-export default function HomePage() {
-  const [activeTab, setActiveTab] = useState("overview")
+export default function HomePage(){
 
-  return (
-    <main className="min-h-screen bg-black text-white p-6">
+  const [activeTab,setActiveTab]=
+  useState("overview")
+
+  return(
+    <main className="min-h-screen p-6">
       <div className="mx-auto max-w-7xl">
 
-        <div className="mb-8">
-          <h1 className="text-5xl font-semibold tracking-tight">
+        <div className="mb-10">
+          <div className="text-5xl font-semibold tracking-tight">
             AXON402
-          </h1>
+          </div>
 
-          <p className="mt-3 text-zinc-400 max-w-2xl">
-            Deterministic infrastructure for autonomous coordination
-          </p>
+          <div className="mt-4 max-w-2xl text-zinc-400">
+            Deterministic infrastructure
+            for autonomous coordination.
+          </div>
         </div>
 
         <div className="mb-8 flex flex-wrap gap-2">
-          {tabs.map((tab) => (
+          {tabs.map((tab)=>(
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`rounded-lg border px-4 py-2 text-sm transition-all ${
-                activeTab === tab
-                  ? "border-cyan-400 bg-cyan-500/20 text-cyan-300"
-                  : "border-white/10 bg-white/5 text-zinc-400"
+              onClick={()=>
+              setActiveTab(tab)}
+              className={`rounded-xl border px-4 py-2 text-sm transition-all ${
+                activeTab===tab
+                ? "border-cyan-400 bg-cyan-500/20 text-cyan-300"
+                : "border-white/10 bg-white/5 text-zinc-400"
               }`}
             >
               {tab}
@@ -45,89 +55,73 @@ export default function HomePage() {
           ))}
         </div>
 
-        {activeTab === "overview" && (
-          <section className="space-y-6">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-              <div className="text-sm text-zinc-500">
-                Infrastructure Status
-              </div>
+        {activeTab==="overview" && (
+          <div className="space-y-8">
 
-              <div className="mt-2 text-2xl font-semibold">
-                Arc Testnet Operational
-              </div>
+            <StatusBanner />
 
-              <div className="mt-4 grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-zinc-500 text-sm">
-                    Execution Throughput
-                  </div>
-                  <div className="mt-1 text-xl">
-                    1,284
-                  </div>
-                </div>
+            <div className="infrastructure-grid">
+              <MetricCard
+                label="Execution Throughput"
+                value="1,284"
+              />
 
-                <div>
-                  <div className="text-zinc-500 text-sm">
-                    Settlement Volume
-                  </div>
-                  <div className="mt-1 text-xl">
-                    42,800 USDC
-                  </div>
-                </div>
+              <MetricCard
+                label="Settlement Volume"
+                value="42,800 USDC"
+              />
 
-                <div>
-                  <div className="text-zinc-500 text-sm">
-                    Latency
-                  </div>
-                  <div className="mt-1 text-xl">
-                    84ms
-                  </div>
-                </div>
+              <MetricCard
+                label="Latency"
+                value="84ms"
+              />
 
-                <div>
-                  <div className="text-zinc-500 text-sm">
-                    Infrastructure Health
-                  </div>
-                  <div className="mt-1 text-xl">
-                    99.98%
-                  </div>
-                </div>
-              </div>
+              <MetricCard
+                label="Infrastructure Health"
+                value="99.98%"
+              />
             </div>
-          </section>
+
+            <ActivityFeed />
+
+          </div>
         )}
 
-        {activeTab === "ledger" && (
-          <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <div className="text-xl font-semibold">
-              Infrastructure Ledger
-            </div>
+        {activeTab==="ledger" && (
+          <div className="space-y-4">
+            <LedgerEntry
+              hash="0x32c59bb4c662519140040cd69ab2e4e2b055b48afa97bf..."
+              status="Finalized"
+            />
 
-            <div className="mt-4 space-y-3">
-              <div className="rounded-xl border border-white/10 p-4">
-                <div className="text-sm text-zinc-500">
-                  Settlement Finalized
-                </div>
-
-                <div className="mt-1 font-mono text-sm break-all">
-                  0x32c59bb4c662519140040cd69ab2e4e2b055b48afa97bf...
-                </div>
-              </div>
-            </div>
-          </section>
+            <LedgerEntry
+              hash="0x8fca14aa55bc821dca4400baaf991cc772..."
+              status="Confirmed"
+            />
+          </div>
         )}
 
-        {activeTab !== "overview" &&
-          activeTab !== "ledger" && (
-          <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <div className="text-xl font-semibold capitalize">
+        {activeTab==="wallets" && (
+          <WalletPanel />
+        )}
+
+        {activeTab==="observability" && (
+          <ActivityFeed />
+        )}
+
+        {activeTab!=="overview" &&
+         activeTab!=="ledger" &&
+         activeTab!=="wallets" &&
+         activeTab!=="observability" && (
+          <div className="infrastructure-panel p-6">
+            <div className="text-2xl font-semibold capitalize">
               {activeTab}
             </div>
 
-            <div className="mt-4 text-zinc-400">
-              Infrastructure module active.
+            <div className="mt-3 text-zinc-400">
+              Infrastructure coordination module active.
             </div>
-          </section>
+          </div>
         )}
 
       </div>
