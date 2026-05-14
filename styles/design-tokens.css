@@ -1,0 +1,27 @@
+:root {
+
+  --bg-primary:
+    #050816;
+
+  --bg-secondary:
+    #0b1020;
+
+  --panel:
+    rgba(255,255,255,0.03);
+
+  --panel-border:
+    rgba(255,255,255,0.08);
+
+  --cyan:
+    #67e8f9;
+
+  --cyan-soft:
+    rgba(103,232,249,0.12);
+
+  --text-primary:
+    #ffffff;
+
+  --text-secondary:
+    #94a3b8;
+
+}
