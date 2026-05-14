@@ -159,7 +159,7 @@ export default function Home() {
                   </p>
 
                   <p>
-                    {data?.formatted} {data?.symbol}
+                    {data?.formatted} {String(data?.symbol || "")}
                   </p>
                 </div>
 

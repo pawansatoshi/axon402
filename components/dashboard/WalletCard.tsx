@@ -40,7 +40,7 @@ export default function WalletCard() {
         <div>
           <span className="text-zinc-500">Balance:</span>
           <p>
-            {data?.formatted} {data?.symbol}
+            {data?.formatted} {String(data?.symbol || "")}
           </p>
         </div>
       </div>
