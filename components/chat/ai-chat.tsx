@@ -23,6 +23,9 @@ export default function AIChat() {
     window.speechSynthesis.cancel()
     window.speechSynthesis.speak(speech)
 
+    console.log("VOICE ACTIVE")
+
+
   }
 
   async function sendMessage() {
@@ -47,6 +50,20 @@ export default function AIChat() {
 
 
     if (!message) return
+
+    const credits = 100
+
+    if (credits <= 0) {
+      alert("Membership exhausted. Recharge required.")
+      return
+    }
+
+
+    if (credits <= 0) {
+      alert("Membership exhausted")
+      return
+    }
+
 
     setLoading(true)
     setReply("")
@@ -189,7 +206,7 @@ export default function AIChat() {
             shadow-[0_0_40px_rgba(168,85,247,0.6)]
           "
         >
-          {loading ? "Thinking..." : "Ask AXON"}
+          {loading ? "Allocating Intelligence..." : "Ask AXON"}
         </button>
 
         <button
@@ -245,7 +262,7 @@ export default function AIChat() {
               border border-green-500/20
               text-xs
             ">
-              STATUS: ACTIVE
+              ARC NETWORK ACTIVE
             </div>
 
           </div>

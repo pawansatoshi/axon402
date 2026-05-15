@@ -1,3 +1,4 @@
+import { AxonModeProvider } from "@/hooks/use-axon-mode"
 import "./globals.css"
 
 import { AuthProvider } from "@/providers/auth-provider"
@@ -21,7 +22,7 @@ export default function RootLayout({
 
           <WalletProvider>
 
-            {children}
+            <AxonModeProvider>{children}</AxonModeProvider>
 
           </WalletProvider>
 

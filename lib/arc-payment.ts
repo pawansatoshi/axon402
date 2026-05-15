@@ -6,11 +6,8 @@ export const ARC_USDC =
 export const ARC_RECEIVER =
   "0xb467F683764593316fAEbB0709127E90791Fe47F"
 
-export const AI_PRICE = parseUnits("1", 6)
+export const MEMBERSHIP_PRICE =
+  parseUnits("10", 6)
 
 export const ARC_EXPLORER =
   "https://testnet.arcscan.app/tx/"
-
-export const PAYMENT_AMOUNT = "1";
-export const PAYMENT_RECEIVER = "0xb467F683764593316fAEbB0709127E90791Fe47F";
-
