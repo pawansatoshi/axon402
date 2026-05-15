@@ -1,5 +1,8 @@
 import "./globals.css"
 
+import { AuthProvider } from "@/providers/auth-provider"
+import { WalletProvider } from "@/providers/wallet-provider"
+
 export const metadata = {
   title: "AXON402",
   description: "AI Operational Workspace",
@@ -12,7 +15,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+
+        <AuthProvider>
+
+          <WalletProvider>
+
+            {children}
+
+          </WalletProvider>
+
+        </AuthProvider>
+
+      </body>
     </html>
   )
 }

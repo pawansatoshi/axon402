@@ -27,6 +27,25 @@ export default function AIChat() {
 
   async function sendMessage() {
 
+    const confirmPay = confirm("AI request fee: 1 USDC\\nContinue payment?")
+
+    const payRes = await fetch("/api/pay", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: "1" })
+    })
+
+    const payData = await payRes.json()
+
+    if (!payData.success) {
+      alert("Payment failed")
+      return
+    }
+
+
+    if (!confirmPay) return
+
+
     if (!message) return
 
     setLoading(true)

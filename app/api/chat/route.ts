@@ -1,12 +1,11 @@
-import { NextResponse } from "next/server";
-import { sendCharge } from "@/lib/arcPayment";
+import { NextResponse } from "next/server"
 
 const MODELS = [
   "moonshotai/kimi-k2:free",
   "openai/gpt-oss-20b:free",
   "deepseek/deepseek-chat-v3-0324:free",
   "google/gemma-2-9b-it:free"
-];
+]
 
 async function tryModel(model: string, message: string) {
 
@@ -29,61 +28,56 @@ async function tryModel(model: string, message: string) {
         ],
       }),
     }
-  );
+  )
 
-  const data = await response.json();
+  const data = await response.json()
 
   if (data?.choices?.[0]?.message?.content) {
     return {
       ok: true,
       reply: data.choices[0].message.content,
       model,
-    };
+    }
   }
 
   return {
     ok: false,
-  };
-
+  }
 }
 
 export async function POST(req: Request) {
 
   try {
 
-    const { message, wallet } = await req.json();
-
-    let finalReply = "No response";
-    let finalModel = "";
+    const { message } = await req.json()
 
     for (const model of MODELS) {
 
-      const result = await tryModel(model, message);
+      const result = await tryModel(
+        model,
+        message
+      )
 
       if (result.ok) {
-        finalReply = result.reply;
-        finalModel = result.model;
-        break;
+
+        return NextResponse.json({
+          reply: result.reply,
+          model: result.model,
+        })
+
       }
 
     }
 
-    const payment = await sendCharge(
-      wallet,
-      "0.001"
-    );
-
     return NextResponse.json({
-      reply: finalReply,
-      model: finalModel,
-      payment,
-    });
+      reply: "All AI servers busy right now."
+    })
 
   } catch (error: any) {
 
     return NextResponse.json({
-      reply: error.message,
-    });
+      reply: error.message
+    })
 
   }
 
