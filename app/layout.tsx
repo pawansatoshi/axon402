@@ -1,13 +1,26 @@
-import { AxonModeProvider } from "@/hooks/use-axon-mode"
+"use client"
+
 import "./globals.css"
 
-import { AuthProvider } from "@/providers/auth-provider"
-import { WalletProvider } from "@/providers/wallet-provider"
+import { WagmiProvider, createConfig, http } from "wagmi"
+import { mainnet } from "wagmi/chains"
 
-export const metadata = {
-  title: "AXON402",
-  description: "AI Operational Workspace",
-}
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+
+import {
+  RainbowKitProvider,
+} from "@rainbow-me/rainbowkit"
+
+import "@rainbow-me/rainbowkit/styles.css"
+
+const config = createConfig({
+  chains: [mainnet],
+  transports: {
+    [mainnet.id]: http(),
+  },
+})
+
+const queryClient = new QueryClient()
 
 export default function RootLayout({
   children,
@@ -18,15 +31,19 @@ export default function RootLayout({
     <html lang="en">
       <body>
 
-        <AuthProvider>
+        <WagmiProvider config={config}>
 
-          <WalletProvider>
+          <QueryClientProvider client={queryClient}>
 
-            <AxonModeProvider>{children}</AxonModeProvider>
+            <RainbowKitProvider>
 
-          </WalletProvider>
+              {children}
 
-        </AuthProvider>
+            </RainbowKitProvider>
+
+          </QueryClientProvider>
+
+        </WagmiProvider>
 
       </body>
     </html>

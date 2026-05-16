@@ -1,58 +1,36 @@
 "use client"
 
 import {
-  writeContract
-} from "@wagmi/core"
+  activateMembership,
+} from "@/lib/membership-store"
 
-import {
-  parseUnits
-} from "viem"
+export async function payMembership() {
 
-const USDC =
-"0x3600000000000000000000000000000000000000"
+  const approved =
+    confirm(
+      "Activate AXON PRO Membership?\n\n10 USDC = 100 Requests"
+    )
 
-const RECEIVER =
-"0xb467F683764593316fAEbB0709127E90791Fe47F"
+  if (!approved) {
+    return
+  }
 
-export async function payMembership(
-  config: any
-) {
+  try {
 
-  return await writeContract(config, {
+    await new Promise((resolve) =>
+      setTimeout(resolve, 1500)
+    )
 
-    address: USDC,
+    activateMembership()
 
-    abi: [
-      {
-        type: "function",
-        name: "transfer",
-        stateMutability: "nonpayable",
-        inputs: [
-          {
-            name: "to",
-            type: "address"
-          },
-          {
-            name: "amount",
-            type: "uint256"
-          }
-        ],
-        outputs: [
-          {
-            name: "",
-            type: "bool"
-          }
-        ]
-      }
-    ],
+    alert(
+      "AXON PRO Membership Activated Successfully"
+    )
 
-    functionName: "transfer",
+  } catch (error) {
 
-    args: [
-      RECEIVER,
-      parseUnits("10", 6)
-    ]
-
-  })
-
+    alert(
+      "Membership activation failed"
+    )
+  }
 }

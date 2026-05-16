@@ -2,48 +2,36 @@
 
 import { useAxonMode } from "@/hooks/use-axon-mode"
 
-const tabs = [
-  "Solve Maths",
-  "Science Quiz",
-  "Create Workflow",
-  "Analyze Image"
-]
-
 export default function AxonTabs() {
+  const axon = useAxonMode()
 
-  const {
-    mode,
-    setMode
-  } = useAxonMode()
+  if (!axon) return null
+
+  const { mode, setMode } = axon
 
   return (
+    <div className="flex gap-3 mb-4">
+      <button
+        onClick={() => setMode("fast")}
+        className={`px-4 py-2 rounded-xl font-bold ${
+          mode === "fast"
+            ? "bg-purple-600 text-white"
+            : "bg-black text-zinc-400"
+        }`}
+      >
+        Fast AI
+      </button>
 
-    <div className="flex flex-wrap gap-4 mb-6">
-
-      {tabs.map((tab) => (
-
-        <button
-          key={tab}
-          onClick={() => setMode(tab)}
-          className={`
-            px-6
-            py-4
-            rounded-2xl
-            transition-all
-            ${
-              mode === tab
-                ? "bg-purple-600"
-                : "bg-zinc-900"
-            }
-          `}
-        >
-          {tab}
-        </button>
-
-      ))}
-
+      <button
+        onClick={() => setMode("reasoning")}
+        className={`px-4 py-2 rounded-xl font-bold ${
+          mode === "reasoning"
+            ? "bg-blue-600 text-white"
+            : "bg-black text-zinc-400"
+        }`}
+      >
+        Reasoning AI
+      </button>
     </div>
-
   )
-
 }

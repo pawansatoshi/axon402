@@ -1,328 +1,288 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
+
+import { runAxonRequest } from "@/lib/ai-gateway"
+import { getMembership } from "@/lib/membership-store"
+
+type Message = {
+  role: "user" | "assistant"
+  content: string
+  time: string
+}
 
 export default function AIChat() {
 
-  const [message, setMessage] = useState("")
-  const [reply, setReply] = useState("")
+  const [prompt, setPrompt] = useState("")
+  const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
-  const [mode, setMode] = useState("normal")
-  const [usedModel, setUsedModel] = useState("")
-  const [responseTime, setResponseTime] = useState("")
-  const [payment, setPayment] = useState<any>(null)
 
-  function speak(text: string) {
+  const [credits, setCredits] = useState(0)
+  const [status, setStatus] = useState("DEACTIVE")
 
-    const speech = new SpeechSynthesisUtterance(text)
+  const bottomRef = useRef<HTMLDivElement>(null)
 
-    speech.rate = 1
-    speech.pitch = 1
-    speech.volume = 1
+  function syncMembership() {
 
-    window.speechSynthesis.cancel()
-    window.speechSynthesis.speak(speech)
+    const data = getMembership()
 
-    console.log("VOICE ACTIVE")
+    setCredits(data.credits)
 
-
+    setStatus(
+      data.active
+        ? "ACTIVE"
+        : "DEACTIVE"
+    )
   }
 
-  async function sendMessage() {
+  useEffect(() => {
+    syncMembership()
+  }, [])
 
-    const confirmPay = confirm("AI request fee: 1 USDC\\nContinue payment?")
-
-    const payRes = await fetch("/api/pay", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: "1" })
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth"
     })
+  }, [messages])
 
-    const payData = await payRes.json()
+  async function handleAsk() {
 
-    if (!payData.success) {
-      alert("Payment failed")
-      return
+    if (!prompt.trim()) return
+
+    const userMessage: Message = {
+      role: "user",
+      content: prompt,
+      time: new Date().toLocaleTimeString(),
     }
 
+    setMessages((prev) => [
+      ...prev,
+      userMessage
+    ])
 
-    if (!confirmPay) return
+    const currentPrompt = prompt
 
-
-    if (!message) return
-
-    const credits = 100
-
-    if (credits <= 0) {
-      alert("Membership exhausted. Recharge required.")
-      return
-    }
-
-
-    if (credits <= 0) {
-      alert("Membership exhausted")
-      return
-    }
-
-
+    setPrompt("")
     setLoading(true)
-    setReply("")
 
-    const start = Date.now()
+    const result =
+      await runAxonRequest(currentPrompt)
 
-    try {
+    if (result.success) {
 
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            result.response ||
+            "No response generated.",
+          time:
+            new Date().toLocaleTimeString(),
         },
-        body: JSON.stringify({
-          message,
-          mode,
-          wallet: "0x584Dc62B330606438a1799e9E08C80d8E805869E"
-        })
-      })
+      ])
 
-      const data = await res.json()
+    } else {
 
-      const end = Date.now()
-
-      setReply(data.reply)
-      setUsedModel(data.model || "unknown")
-      setPayment(data.payment || null)
-
-      setResponseTime(
-        ((end - start) / 1000).toFixed(1)
-      )
-
-      speak(data.reply)
-
-    } catch {
-
-      setReply("AI Error")
-
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            result.error ||
+            "Request failed.",
+          time:
+            new Date().toLocaleTimeString(),
+        },
+      ])
     }
+
+    syncMembership()
 
     setLoading(false)
-
   }
 
   return (
-    <div className="
-      rounded-[32px]
-      border border-white/10
-      bg-white/5
-      backdrop-blur-xl
-      p-6
-      mt-8
-    ">
+
+    <div className="bg-[#071028] rounded-[32px] p-6 mt-8 border border-white/10">
 
       <div className="flex items-center justify-between mb-6">
 
         <div>
 
-          <div className="text-3xl font-black">
+          <h2 className="text-5xl font-black text-white">
             AXON AI
-          </div>
+          </h2>
 
-          <div className="text-zinc-500 text-sm mt-1">
-            Multi-Model Intelligence Engine
-          </div>
+          <p className="text-zinc-400 mt-2">
+            Multi-Agent Intelligence Workspace
+          </p>
 
         </div>
 
-        <div className="
-          px-4
-          py-2
-          rounded-xl
-          bg-green-500/10
-          border border-green-500/20
-          text-green-400
-          text-sm
-        ">
-          ● Online
+        <div className="flex items-center gap-3">
+
+          <div
+            className={`
+            px-4 py-2 rounded-2xl text-sm font-black
+            ${
+              status === "ACTIVE"
+                ? "bg-green-500/20 text-green-400"
+                : "bg-red-500/20 text-red-400"
+            }
+          `}
+          >
+            {status}
+          </div>
+
+          <div className="px-4 py-2 rounded-2xl bg-black text-zinc-300 text-sm font-bold">
+            Credits: {credits}
+          </div>
+
         </div>
 
       </div>
 
-      <div className="flex gap-3 mb-5">
+      <div className="flex flex-wrap gap-3 mb-6">
 
-        <button
-          onClick={() => setMode("normal")}
-          className={`
-            px-5 py-3 rounded-2xl transition
-            ${mode === "normal"
-              ? "bg-purple-600 shadow-[0_0_30px_rgba(168,85,247,0.5)]"
-              : "bg-black/30 border border-white/10"}
-          `}
-        >
+        <button className="px-5 py-3 rounded-2xl bg-purple-600 font-bold">
           Fast AI
         </button>
 
-        <button
-          onClick={() => setMode("reasoning")}
-          className={`
-            px-5 py-3 rounded-2xl transition
-            ${mode === "reasoning"
-              ? "bg-purple-600 shadow-[0_0_30px_rgba(168,85,247,0.5)]"
-              : "bg-black/30 border border-white/10"}
-          `}
-        >
+        <button className="px-5 py-3 rounded-2xl bg-black border border-white/10">
           Reasoning AI
         </button>
 
+        <button className="px-5 py-3 rounded-2xl bg-black border border-white/10">
+          Voice
+        </button>
+
+        <button className="px-5 py-3 rounded-2xl bg-black border border-white/10">
+          Agents
+        </button>
+
       </div>
 
-      <textarea
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Ask anything... maths, science, coding, projects..."
+      <div
         className="
-          w-full
-          min-h-[160px]
-          rounded-3xl
-          bg-black/40
-          border border-white/10
-          p-6
-          outline-none
-          text-lg
-        "
-      />
+        h-[500px]
+        overflow-y-auto
+        rounded-[28px]
+        bg-black/40
+        border border-white/5
+        p-5
+        space-y-5
+      "
+      >
 
-      <div className="flex gap-4 mt-5">
+        {messages.length === 0 && (
 
-        <button
-          onClick={sendMessage}
-          disabled={loading}
-          className="
-            px-8
-            py-4
-            rounded-2xl
-            bg-purple-600
-            hover:bg-purple-500
-            transition
-            font-semibold
-            shadow-[0_0_40px_rgba(168,85,247,0.6)]
-          "
-        >
-          {loading ? "Allocating Intelligence..." : "Ask AXON"}
-        </button>
+          <div className="text-zinc-500 text-center pt-24">
+            AXON402 Intelligence System Ready
+          </div>
 
-        <button
-          onClick={() => speak(reply)}
-          className="
-            px-6
-            py-4
-            rounded-2xl
-            bg-blue-600
-            hover:bg-blue-500
-            transition
-            font-semibold
-          "
-        >
-          Speak
-        </button>
+        )}
+
+        {messages.map((msg, index) => (
+
+          <div
+            key={index}
+            className={`
+            flex
+            ${
+              msg.role === "user"
+                ? "justify-end"
+                : "justify-start"
+            }
+          `}
+          >
+
+            <div
+              className={`
+              max-w-[85%]
+              rounded-[28px]
+              px-5
+              py-4
+              ${
+                msg.role === "user"
+                  ? "bg-purple-600 text-white"
+                  : "bg-[#111827] text-zinc-200 border border-white/10"
+              }
+            `}
+            >
+
+              <div className="whitespace-pre-wrap break-words">
+                {msg.content}
+              </div>
+
+              <div className="text-[10px] opacity-60 mt-3">
+                {msg.time}
+              </div>
+
+            </div>
+
+          </div>
+
+        ))}
+
+        {loading && (
+
+          <div className="flex justify-start">
+
+            <div className="bg-[#111827] border border-white/10 rounded-[28px] px-5 py-4 text-zinc-400">
+              AXON is thinking...
+            </div>
+
+          </div>
+
+        )}
+
+        <div ref={bottomRef} />
 
       </div>
 
-      {(reply || usedModel) && (
+      <div className="mt-6 flex gap-4">
 
-        <div className="
-          mt-8
-          rounded-3xl
-          bg-black/30
+        <textarea
+          value={prompt}
+
+          onChange={(e) =>
+            setPrompt(e.target.value)
+          }
+
+          placeholder="Ask AXON anything..."
+
+          className="
+          flex-1
+          h-24
+          rounded-[28px]
+          bg-black
           border border-white/10
-          p-6
-        ">
+          p-5
+          resize-none
+        "
+        />
 
-          <div className="flex flex-wrap gap-3 mb-5">
+        <button
+          onClick={handleAsk}
 
-            <div className="
-              px-3 py-2 rounded-xl
-              bg-purple-500/10
-              border border-purple-500/20
-              text-xs
-            ">
-              MODEL: {usedModel}
-            </div>
+          disabled={loading}
 
-            <div className="
-              px-3 py-2 rounded-xl
-              bg-blue-500/10
-              border border-blue-500/20
-              text-xs
-            ">
-              RESPONSE: {responseTime}s
-            </div>
+          className="
+          px-8
+          rounded-[28px]
+          bg-purple-600
+          font-black
+          min-w-[140px]
+        "
+        >
+          {loading
+            ? "Thinking..."
+            : "Ask AXON"}
+        </button>
 
-            <div className="
-              px-3 py-2 rounded-xl
-              bg-green-500/10
-              border border-green-500/20
-              text-xs
-            ">
-              ARC NETWORK ACTIVE
-            </div>
-
-          </div>
-
-          <div className="
-            whitespace-pre-wrap
-            leading-8
-            text-[17px]
-          ">
-            {reply}
-          </div>
-
-          {payment && (
-
-            <div className="
-              mt-6
-              rounded-2xl
-              border border-green-500/20
-              bg-green-500/5
-              p-4
-            ">
-
-              <div className="text-sm text-green-400 mb-2">
-                ARC PAYMENT
-              </div>
-
-              <div className="text-xs break-all">
-                TX: {payment.hash}
-              </div>
-
-              <div className="text-xs mt-2">
-                Amount: {payment.amount} USDC
-              </div>
-
-              <div className="text-xs mt-2">
-                Date: {payment.date}
-              </div>
-
-              <a
-                href={payment.explorer}
-                target="_blank"
-                className="
-                  inline-block
-                  mt-3
-                  text-blue-400
-                  text-xs
-                "
-              >
-                Open Explorer →
-              </a>
-
-            </div>
-
-          )}
-
-        </div>
-
-      )}
+      </div>
 
     </div>
   )
-
 }
