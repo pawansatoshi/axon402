@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-
 import {
   useAccount,
   useBalance,
@@ -42,7 +41,7 @@ export default function SendUSDC() {
 
   const {
     data: hash,
-    writeContract,
+    writeContractAsync,
     isPending,
   } = useWriteContract()
 
@@ -54,7 +53,7 @@ export default function SendUSDC() {
   async function handleSend() {
     if (!receiver || !amount) return
 
-    await writeContract({
+    await writeContractAsync({
       chainId: 5042002,
 
       address: USDC_ADDRESS,
