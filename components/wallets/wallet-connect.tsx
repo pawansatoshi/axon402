@@ -14,7 +14,10 @@ export default function WalletConnect() {
   )
 }
 
-      await window.ethereum.request({
+      
+if (typeof window !== "undefined" && window.ethereum) {
+  await window.ethereum.request({
+
         method: "wallet_watchAsset",
         params: {
           type: "ERC20",
@@ -26,3 +29,5 @@ export default function WalletConnect() {
           }
         }
       }).catch(() => {})
+}
+
